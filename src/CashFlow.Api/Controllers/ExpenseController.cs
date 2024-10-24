@@ -12,9 +12,20 @@ public class ExpenseController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public IActionResult Register([FromBody] RequestRegisterExpenseJson request)
     {
-        var useCase = new RegisterExpenseUseCase();
-        var response = useCase.Execute(request);
+        try
+        {
+            var useCase = new RegisterExpenseUseCase();
+            var response = useCase.Execute(request);
 
-        return Created(string.Empty, response);
+            return Created(string.Empty, response);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+        catch(Exception ex)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError, "unknow error");
+        }
     }
 }
